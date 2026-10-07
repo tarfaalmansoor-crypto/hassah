@@ -1,600 +1,77 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>حاسّة — نموذج أوّلي (بدون JavaScript)</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{
-  --ink:#1E2A3A;--ink2:#2E3A4C;--muted:#6F7682;--line:#E7DFD3;--bg:#F5F0E8;--card:#FFFFFF;
-  --p:#3A79C5;--p2:#5A93D9;--p-soft:#DCE8F7;--lemon:#F4B6B6;--rose:#E08E8E;
-  --green:#2E9E73;--green-soft:#DDF0E6;--green-ink:#1F6E4F;
-  --amber:#D9A441;--amber-soft:#F7EBD0;--amber-ink:#7C5A14;
-  --red:#C8393F;--red-soft:#F7D9D9;--red-ink:#8E2328;
-  --kid:#FBE9E6;--frame:#111320;
-  color-scheme:light;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--frame:#000}}
-:root[data-theme="dark"]{--frame:#000}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{font-family:'IBM Plex Sans Arabic','Segoe UI',system-ui,sans-serif;background:#EAE3D8;color:var(--ink);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-input,textarea{font:inherit}
-.stage{min-height:100%;display:flex;align-items:center;justify-content:center;gap:28px;padding:24px 16px}
-.phone{width:390px;height:780px;background:var(--frame);border-radius:46px;padding:10px;box-shadow:0 30px 70px rgba(30,42,58,.28);position:relative;flex-shrink:0}
-.scr{width:100%;height:100%;background:var(--bg);border-radius:38px;overflow:hidden;position:relative;display:flex;flex-direction:column}
-.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:120px;height:30px;background:var(--frame);border-radius:0 0 18px 18px;z-index:9}
-.status{display:flex;justify-content:space-between;padding:14px 26px 0;font-size:12px;font-weight:500;flex-shrink:0}
-.view{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;scrollbar-width:none}
-.view::-webkit-scrollbar{display:none}
-.body{padding:16px 18px 24px;display:flex;flex-direction:column;gap:12px;flex:1}
-.body.tabbed{padding-bottom:92px}
-@media (max-width:820px){
-  body{background:var(--bg)}
-  .stage{padding:0;gap:0;align-items:stretch}
-  .phone{width:100%;height:100%;min-height:100dvh;border-radius:0;padding:0;box-shadow:none}
-  .scr{border-radius:0}
-  .notch{display:none}
-  .status{display:none}
-  .side{display:none!important}
-  .mapbtn{display:flex}
-}
-/* side panel (desktop) */
-.side{width:300px;max-height:780px;background:#fff;border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:6px;overflow:auto;box-shadow:0 10px 30px rgba(22,26,46,.08)}
-.side h3{font-size:15px;font-weight:600;margin-bottom:4px}
-.side p{font-size:11.5px;color:var(--muted);margin-bottom:8px}
-.side .grp{font-size:11px;color:var(--p);font-weight:600;margin-top:8px}
-.side button{text-align:right;padding:6px 10px;border-radius:9px;font-size:12.5px;color:var(--ink2)}
-.side button:hover{background:var(--bg)}
-.side button.on{background:var(--p);color:#fff}
-/* in-phone map button */
-.mapbtn{display:none;position:absolute;bottom:18px;left:14px;z-index:20;width:40px;height:40px;border-radius:50%;background:var(--p);color:#fff;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,.25)}
-.mapsheet{position:absolute;inset:0;background:rgba(22,26,46,.55);z-index:30;display:none;align-items:flex-end}
-.mapsheet.open{display:flex}
-.mapsheet .sheet{background:#fff;border-radius:24px 24px 0 0;max-height:80%;width:100%;overflow:auto;padding:16px 18px 30px}
-.mapsheet .sheet .grp{font-size:11px;color:var(--p);font-weight:600;margin-top:10px}
-.mapsheet .sheet button{display:block;width:100%;text-align:right;padding:8px 6px;border-bottom:1px solid var(--line);font-size:13px}
+Question 4
+0.75
+ Points
+Question 4
+A company wants to store many types of data like a data lake. It also needs transactions, schema enforcement, and governance. What is most suitable?
 
-/* typography */
-.h1{font-size:22px;font-weight:600;line-height:1.3}
-.h2{font-size:17px;font-weight:600;line-height:1.35}
-.sub{font-size:12.5px;color:var(--muted);line-height:1.6}
-.lbl{font-size:11.5px;color:var(--muted);font-weight:500;margin-bottom:-4px}
-.h2{color:var(--ink)}
-.small{font-size:11.5px;color:var(--muted)}
-/* components */
-.btn{display:block;width:100%;background:var(--p);color:#fff;border-radius:14px;padding:13px;text-align:center;font-size:14px;font-weight:500;transition:transform .08s}
-.btn:active{transform:scale(.985)}
-.btn.ghost{background:transparent;border:1.5px solid var(--p);color:var(--p)}
-.btn.green{background:var(--green)}
-.btn.red{background:var(--red)}
-.btn.soft{background:#fff;border:1px solid var(--line);color:var(--ink)}
-.btn.sm{padding:9px;font-size:12.5px;border-radius:11px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
-.row{display:flex;align-items:center;gap:10px}
-.sp{flex:1}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:12.5px;transition:all .12s}
-.chip.on{background:var(--p);color:#fff;border-color:var(--p)}
-.chip.red{background:var(--red-soft);color:var(--red-ink);border-color:transparent}
-.chip.amb{background:var(--amber-soft);color:var(--amber-ink);border-color:transparent}
-.chip.grn{background:var(--green-soft);color:var(--green-ink);border-color:transparent}
-.chip.xs{padding:3px 9px;font-size:11px}
-.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
-.list{display:flex;flex-direction:column}
-.item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
-.item:last-child{border-bottom:0}
-.item .l{font-size:11.5px;color:var(--muted)}
-.item b{font-weight:500}
-.input{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 12px;font-size:13.5px;color:var(--ink);width:100%;outline:none}
-.input::placeholder{color:#A1A4B5}
-.input:focus{border-color:var(--p)}
-.toggle{width:40px;height:22px;border-radius:11px;background:var(--p);position:relative;flex-shrink:0;transition:background .15s}
-.toggle:after{content:"";position:absolute;left:20px;top:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s}
-.toggle.off{background:#CFD1DC}.toggle.off:after{left:2px}
-.prog{display:flex;gap:5px}.prog i{flex:1;height:3px;border-radius:2px;background:var(--line)}.prog i.on{background:var(--p)}
-.tabs{position:absolute;bottom:0;left:0;right:0;height:72px;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;padding:0 6px 8px;z-index:8}
-.tabs button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;color:var(--muted);width:60px}
-.tabs button.on{color:var(--p);font-weight:600}
-.tabs svg{width:22px;height:22px}
-.fab{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);width:64px;height:64px;border-radius:50%;background:var(--p);border:5px solid var(--bg);display:flex;align-items:center;justify-content:center;z-index:9;box-shadow:0 8px 20px rgba(58,121,197,.4)}
-.fab svg{width:28px;height:28px}
-.ring{width:150px;height:150px;border-radius:50%;margin:8px auto;display:flex;align-items:center;justify-content:center;flex-direction:column;font-weight:600;animation:pop .35s cubic-bezier(.2,.9,.3,1.2)}
-@keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
-@media (prefers-reduced-motion:reduce){.ring{animation:none}}
-.ring.ok{background:var(--green-soft);color:var(--green-ink);border:7px solid var(--green)}
-.ring.warn{background:var(--amber-soft);color:var(--amber-ink);border:7px solid var(--amber)}
-.ring.bad{background:var(--red-soft);color:var(--red-ink);border:7px solid var(--red)}
-.ring big{font-size:34px;line-height:1}.ring small{font-size:12px;font-weight:500;margin-top:4px}
-.bar{height:7px;border-radius:4px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;background:var(--green)}
-.cam{flex:1;min-height:300px;background:#1E2A3A;border-radius:18px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.cam .frame{position:absolute;inset:40px 32px;border:2px solid rgba(255,255,255,.85);border-radius:14px}
-.cam .frame:before,.cam .frame:after{content:"";position:absolute;width:26px;height:26px;border:4px solid var(--lemon);border-radius:4px}
-.cam .frame:before{top:-3px;right:-3px;border-left:0;border-bottom:0}
-.cam .frame:after{bottom:-3px;left:-3px;border-right:0;border-top:0}
-.cam .line{position:absolute;left:40px;right:40px;top:48%;height:2px;background:var(--lemon);box-shadow:0 0 14px var(--lemon);animation:scan 1.8s ease-in-out infinite}
-@keyframes scan{0%,100%{top:22%}50%{top:76%}}
-@media (prefers-reduced-motion:reduce){.cam .line{animation:none}}
-.cam .lbl2{position:absolute;bottom:14px;left:0;right:0;text-align:center;color:#fff;font-size:12px}
-.msg{border-radius:14px;padding:10px 12px;font-size:13px;line-height:1.6;max-width:86%}
-.msg.ai{background:#fff;border:1px solid var(--line);align-self:flex-start;border-top-right-radius:4px}
-.msg.me{background:var(--p);color:#fff;align-self:flex-end;border-top-left-radius:4px}
-.sos{background:var(--red);color:#fff;border-radius:20px;padding:18px;text-align:center}
-.sos big{font-size:40px;font-weight:600;display:block;line-height:1}.sos small{font-size:12px;opacity:.9}
-.stepn{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.55}
-.stepn i{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--red-soft);color:var(--red-ink);font-style:normal;font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:600;margin-top:2px}
-.stepn i.g{background:var(--green-soft);color:var(--green-ink)}
-.idcard{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;border-radius:18px;padding:16px}
-.idcard .k{font-size:10.5px;opacity:.65}.idcard .v{font-size:14px;font-weight:500;margin-bottom:8px}
-.qr{width:72px;height:72px;border-radius:8px;background:
- repeating-linear-gradient(90deg,#fff 0 7px,transparent 7px 14px),repeating-linear-gradient(0deg,#fff 0 7px,transparent 7px 14px);opacity:.9}
-.stat{flex:1;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center}
-.stat big{font-size:22px;font-weight:600;display:block;line-height:1.2;color:var(--p)}.stat small{font-size:10.5px;color:var(--muted);white-space:nowrap}
-.kv{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;padding:9px 0;border-bottom:1px solid var(--line)}
-.kv:last-child{border-bottom:0}
-.sev{display:flex;gap:5px}
-.sev span{flex:1;height:30px;border-radius:9px;background:#fff;border:1px solid var(--line);font-size:11.5px;display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:pointer}
-.sev span.on{background:var(--amber-soft);border-color:var(--amber);color:var(--amber-ink);font-weight:600}
-.sev span.on.hi{background:var(--red-soft);border-color:var(--red);color:var(--red-ink)}
-.sev span.on.lo{background:var(--green-soft);border-color:var(--green);color:var(--green-ink)}
-.alt{display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
-.alt:last-child{border-bottom:0}
-.thumb{width:44px;height:44px;border-radius:12px;background:var(--p-soft);flex-shrink:0;display:flex;align-items:center;justify-content:center}.thumb svg{width:22px;height:22px}
-.thumb.a{background:#E8E5F7}.thumb.b{background:#FBEAD7}.thumb.p{background:#F6E1EE}
-.alt .nm{font-size:13.5px;font-weight:500}.alt .ds{font-size:11.5px;color:var(--muted)}
-.badge{font-size:11px;padding:3px 9px;border-radius:999px;background:var(--green-soft);color:var(--green-ink);font-weight:500;white-space:nowrap}
-.back{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);padding:0}
-.back svg{width:18px;height:18px}
-.hdr{display:flex;align-items:center;gap:10px}
-.hdr .h2{flex:1}
-.pic{background:linear-gradient(135deg,#C9D8D3,#8FB0A7);border-radius:14px;height:90px;position:relative;overflow:hidden}
-.pic span{position:absolute;bottom:0;right:0;left:0;padding:8px 12px;background:linear-gradient(transparent,rgba(0,0,0,.6));color:#fff;font-size:13px;font-weight:600}
-.menu-img{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:9px;line-height:1.7;color:#555;direction:ltr;text-align:left;font-family:Georgia,serif}
-.hl-r{background:var(--red-soft);color:var(--red-ink);font-weight:600;padding:0 2px}
-.hl-a{background:var(--amber-soft);color:var(--amber-ink);font-weight:600;padding:0 2px}
-.toast{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:9px 16px;border-radius:999px;font-size:12.5px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:40;white-space:nowrap}
-.toast.show{opacity:1}
-.logo{display:flex;flex-direction:column;align-items:center;gap:10px}
-.wordmark{font-size:34px;font-weight:600;letter-spacing:-.5px;line-height:1}
-.big{font-size:20px;font-weight:600}
-.elder .btn{font-size:20px;padding:20px;border-radius:20px}
-/* modes */
-.scr[data-mode="elder"]{font-size:16.5px}
-.scr[data-mode="elder"] .h1{font-size:26px}.scr[data-mode="elder"] .h2{font-size:21px}.scr[data-mode="elder"] .sub,.scr[data-mode="elder"] .small{font-size:14.5px}
-.scr[data-mode="elder"] .btn{font-size:17px;padding:16px}.scr[data-mode="elder"] .chip{font-size:14.5px;padding:8px 14px}
-.scr[data-mode="elder"] .grid3{grid-template-columns:1fr 1fr}.scr[data-mode="elder"] .tile{min-height:116px;font-size:14.5px}.scr[data-mode="elder"] .tile .em{width:52px;height:52px}.scr[data-mode="elder"] .tile .em svg{width:28px;height:28px}
-.scr[data-mode="kid"]{--bg:#FBE9E6;--card:#FFFBFA;font-size:15px}
-.scr[data-mode="kid"] .tile{min-height:108px;font-size:14px;border-radius:22px}.scr[data-mode="kid"] .tile .em{width:56px;height:56px;border-radius:18px}.scr[data-mode="kid"] .tile .em svg{width:30px;height:30px}
-.scr[data-mode="kid"] .h1{font-size:25px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.tile{background:var(--card);border:1.5px solid var(--line);border-radius:16px;min-height:92px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:12.5px;font-weight:500;text-align:center;padding:8px 6px;line-height:1.3;transition:all .12s}
-.tile .em{width:40px;height:40px;border-radius:12px;background:var(--p-soft);color:var(--p);display:flex;align-items:center;justify-content:center}.tile .em svg{width:22px;height:22px}.tile.on .em{background:var(--p);color:#fff}
-.tile.on{border-color:var(--p);background:var(--p-soft)}
-.tile:active{transform:scale(.97)}
-.crumb{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:12px;color:var(--muted);display:inline-flex;gap:6px;align-self:flex-start}
-.crumb b{color:var(--ink);font-weight:500}
-.modecard{display:flex;align-items:flex-start;gap:12px;padding:14px;border:1.5px solid var(--line);border-radius:16px;background:#fff;text-align:right;width:100%}
-.modecard.on{border-color:var(--p);background:var(--p-soft)}
-.modecard .em{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;align-self:flex-start}.modecard .em svg{width:26px;height:26px}
-.modecard b{display:block;font-size:15px}.modecard span{font-size:12px;color:var(--muted)}
-.micbig{width:120px;height:120px;border-radius:50%;background:var(--p);display:flex;align-items:center;justify-content:center;margin:10px auto 4px;box-shadow:0 14px 30px rgba(58,121,197,.4)}
-.micbig svg{width:52px;height:52px;color:#fff}
-.scr[data-mode="kid"] .micbig{background:var(--amber)}
-.loading{position:absolute;inset:0;background:rgba(243,243,247,.92);z-index:25;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px}
-.loading.on{display:flex}
-.spin{width:44px;height:44px;border-radius:50%;border:4px solid var(--line);border-top-color:var(--p);animation:rot .8s linear infinite}
-@keyframes rot{to{transform:rotate(360deg)}}
-.prodcard{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:16px;padding:10px 12px}
-.prodcard .img{width:58px;height:58px;border-radius:12px;background:var(--p-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0}.prodcard .img svg{width:30px;height:30px}
-.prodcard b{font-size:14px;display:block}.prodcard span{font-size:11.5px;color:var(--muted)}
-.setrow{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-size:13.5px;width:100%;text-align:right}
-.setrow:last-child{border-bottom:0}
-.kid{background:#FBE9E6}
+Option A
+Operational database
 
-a{color:inherit;text-decoration:none}
-.scr{position:relative}
-.s{position:absolute;inset:0;display:none;flex-direction:column;background:var(--bg);border-radius:inherit;overflow:hidden}
-.s:target{display:flex}
-#welcome{display:flex}
-.s:target ~ #welcome{display:none}
-.s .view{flex:1}
-.s[data-mode="elder"]{font-size:16.5px}.s[data-mode="elder"] .h1{font-size:26px}.s[data-mode="elder"] .h2{font-size:21px}.s[data-mode="elder"] .sub,.s[data-mode="elder"] .small{font-size:14.5px}.s[data-mode="elder"] .btn{font-size:17px;padding:16px}.s[data-mode="elder"] .chip{font-size:14.5px;padding:8px 14px}.s[data-mode="elder"] .grid3{grid-template-columns:1fr 1fr}.s[data-mode="elder"] .tile{min-height:116px;font-size:14.5px}.s[data-mode="elder"] .tile .em{font-size:34px}
-.s[data-mode="kid"]{--bg:#FBE9E6;--card:#FFFBFA;font-size:15px;background:#FBE9E6}.s[data-mode="kid"] .tile{min-height:108px;font-size:14px;border-radius:22px}.s[data-mode="kid"] .tile .em{font-size:36px}.s[data-mode="kid"] .h1{font-size:25px}.s[data-mode="kid"] .micbig{background:var(--amber)}
-.btn,.chip,.tile,.modecard,.item,.setrow,.fab,.tabs a{display:flex;align-items:center;justify-content:center}
-.item,.setrow{justify-content:space-between}
-.modecard{justify-content:flex-start}
-.tabs a{flex-direction:column;gap:3px;font-size:10.5px;color:var(--muted);width:60px}
-.tabs a.on{color:var(--p);font-weight:600}
-.tabs svg{width:22px;height:22px}
-.maplist .grp{font-size:11px;color:var(--p);font-weight:600;margin-top:10px}
-.maplist a{display:block;padding:8px 6px;border-bottom:1px solid var(--line);font-size:13px}
-.mapbtn{display:flex;text-decoration:none}
-.side a{display:block;text-align:right;padding:6px 10px;border-radius:9px;font-size:12.5px;color:var(--ink2)}
-.side a:hover{background:var(--bg)}
-@media (max-width:820px){.side{display:none}}
-</style></head><body>
-<div class="stage">
-  <div class="side"><div class="row" style="gap:8px;margin-bottom:4px"><b style="font-size:18px;color:var(--p)">حاسّة</b><span class="small">نموذج بدون JavaScript</span></div><p>اضغط أي شاشة. التنقل داخل الهاتف يعمل بالروابط فقط، فيفتح في أي متصفح أو معاينة.</p><div class="grp">البداية</div><a href="#welcome">1. الترحيب</a><a href="#mode">1ب. اختيار الوضع</a><a href="#allergens">2. اختيار المسبّبات</a><a href="#severity">3. درجة الخطورة</a><div class="grp">الرئيسية والمسح</div><a href="#home">4. الرئيسية</a><a href="#place">4ب. اختيار المكان</a><a href="#product">4ج. المنتج حسب المكان</a><a href="#input">4د. طريقة الإدخال</a><a href="#scan">5. مسح الباركود</a><a href="#ocr">6. تصوير المكوّنات</a><div class="grp">النتيجة</div><a href="#rSafe">7. آمن</a><a href="#rWarn">8. تنبيه</a><a href="#rDanger">9. خطر</a><a href="#drug">9ب. دواء (صيدلية)</a><div class="grp">البدائل والمساعد</div><a href="#alts">10. البدائل</a><a href="#assistant">11. المساعد الذكي</a><a href="#log">12. الاكتشاف</a><div class="grp">الطوارئ</div><a href="#sos">13. فرز الأعراض</a><a href="#sosSteps">14. خطوات الطوارئ</a><a href="#medcard">15. البطاقة الطبية</a><div class="grp">المطاعم</div><a href="#menu">16. مسح المنيو</a><a href="#dish">17. تأكيد الطبق</a><a href="#waiter">18. بطاقة النادل</a><div class="grp">لكل الأعمار</div><a href="#elder">19. وضع كبار السن</a><a href="#place_elder">19ب. المكان — كبار السن</a><a href="#input_elder">19ج. الإدخال — كبار السن</a><a href="#kid">20. وضع الأطفال</a><a href="#place_kid">20ب. المكان — طفل</a><a href="#product_kid">20ج. المنتج — طفل</a><a href="#input_kid">20د. الإدخال — طفل</a><a href="#caregiver">21. لوحة مقدّم الرعاية</a><div class="grp">أي مسبّب، أي منتج</div><a href="#custom">22. مسبّب مخصّص</a><a href="#perfume">23. فحص عطر</a><a href="#photo">24. تعرّف بالصورة</a><div class="grp">تجارب الناس</div><a href="#search">25. بحث + تجارب الناس</a><a href="#report">26. تسجيل تجربة</a><a href="#reportStatus">27. قيد المراجعة</a><div class="grp">الإعدادات</div><a href="#settings">28. الإعدادات</a></div>
-  <div class="phone"><div class="notch"></div><div class="scr"><section class="s" id="mode" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body" style="gap:14px">
-  <div class="prog"><i class="on"></i><i></i><i></i><i></i></div>
-  <div>
-    <div class="h1">اختر وضع الاستخدام</div>
-    <div class="sub">يضبط حجم النص، وطريقة الإدخال، ومن يستلم التنبيهات. يمكن تغييره لاحقًا من الإعدادات.</div>
-  </div>
-  <a class="modecard on" href="#allergens">
-    <div class="em" style="background:var(--p);color:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"></path></svg></div>
-    <div style="flex:1"><div class="row"><b>عادي</b><span class="sp"></span><span style="width:20px;height:20px;border-radius:50%;background:var(--p);color:#fff;display:flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg></span></div>
-      <span>للبالغين. كل طرق الإدخال: كتابة، صوت، باركود، صورة.</span>
-      <div class="chips" style="margin-top:8px"><span class="chip xs" style="font-size:10.5px;padding:2px 8px">كتابة</span><span class="chip xs" style="font-size:10.5px;padding:2px 8px">صوت</span><span class="chip xs" style="font-size:10.5px;padding:2px 8px">باركود</span><span class="chip xs" style="font-size:10.5px;padding:2px 8px">صورة</span></div></div>
-  </a><a class="modecard " href="#place_elder">
-    <div class="em" style="background:var(--p-soft);color:var(--p)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="7" r="3.5"></circle><path d="M5 21c0-4 2.7-7 6-7 1.6 0 3 .6 4 1.6"></path><path d="M17.5 13.5V21M17.5 13.5a1.5 1.5 0 0 1 1.5 1.5"></path></svg></div>
-    <div style="flex:1"><div class="row"><b>كبار السن</b><span class="sp"></span></div>
-      <span>نص أكبر، أزرار أعرض، إدخال بالصوت، والنتيجة تُقرأ بصوت مسموع.</span>
-      <div class="chips" style="margin-top:8px"><span class="chip xs" style="font-size:10.5px;padding:2px 8px">نص كبير</span><span class="chip xs" style="font-size:10.5px;padding:2px 8px">صوت</span><span class="chip xs" style="font-size:10.5px;padding:2px 8px">قراءة النتيجة</span></div></div>
-  </a><a class="modecard " href="#place_kid">
-    <div class="em" style="background:var(--p-soft);color:var(--p)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.5"></circle><path d="M6 21c0-3.5 2.7-6 6-6s6 2.5 6 6"></path><path d="M9.5 9.2c.7.6 1.5.9 2.5.9s1.8-.3 2.5-.9"></path><path d="M15 4l1-1.5M9 4L8 2.5"></path></svg></div>
-    <div style="flex:1"><div class="row"><b>طفل</b><span class="sp"></span></div>
-      <span>واجهة مبسّطة بدون كتابة، كلمات واضحة، وتنبيه فوري لولي الأمر.</span>
-      <div class="chips" style="margin-top:8px"><span class="chip xs" style="font-size:10.5px;padding:2px 8px">بدون كتابة</span><span class="chip xs" style="font-size:10.5px;padding:2px 8px">تنبيه الوالدين</span><span class="chip xs" style="font-size:10.5px;padding:2px 8px">وضع المدرسة</span></div></div>
-  </a>
-  <div class="sp"></div>
-  <a class="btn" href="#allergens">متابعة</a>
-</div></div></section><section class="s" id="allergens" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="prog"><i class="on"></i><i class="on"></i><i></i><i></i></div>
-  <div class="h1">من ماذا تعانين حساسية؟</div>
-  <div class="sub">اختاري كل ما ينطبق. تقدرين تضيفين أي مادة لاحقًا.</div>
-  <div class="lbl">الأطعمة الشائعة</div><div class="chips"><button class="chip on">فول سوداني</button><button class="chip ">مكسّرات</button><button class="chip on">حليب</button><button class="chip ">بيض</button><button class="chip ">قمح/غلوتين</button><button class="chip ">سمسم</button><button class="chip ">صويا</button><button class="chip ">قشريات</button><button class="chip on">عسل</button><button class="chip ">سمك</button></div>
-  <div class="lbl">البشرة والعناية</div><div class="chips"><button class="chip ">عطور</button><button class="chip on">نيكل</button><button class="chip ">لانولين</button><button class="chip ">بارابين</button><button class="chip ">صبغة PPD</button><button class="chip ">لاتكس</button></div>
-  <a class="input" style="text-align:right;color:var(--muted)" href="#custom">+ مادة أخرى (ياسمين، لقاح، دواء…)</a>
-  <div class="sp"></div>
-  <a class="btn" href="#severity">التالي</a>
-</div></div></section><section class="s" id="severity" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="prog"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
-  <div class="h1">ما شدّة كل حساسية؟</div>
-  <div class="sub">تحدد كيف نحذّرك وماذا نقترح في الطوارئ.</div>
-  <div class="card"><div class="row"><b>فول سوداني</b><span class="sp"></span><span class="chip xs red">شديدة</span></div>
-   <div class="sev" style="margin-top:8px"><span class="">خفيفة</span><span class="">متوسطة</span><span class="on hi">شديدة</span></div>
-   <div class="row" style="margin-top:10px;font-size:12.5px"><span>أحمل قلم إبينفرين</span><span class="sp"></span><button class="toggle "></button></div></div><div class="card"><div class="row"><b>حليب</b><span class="sp"></span><span class="chip xs amb">متوسطة</span></div>
-   <div class="sev" style="margin-top:8px"><span class="">خفيفة</span><span class="on ">متوسطة</span><span class="">شديدة</span></div>
-   </div><div class="card"><div class="row"><b>عسل</b><span class="sp"></span><span class="chip xs grn">خفيفة</span></div>
-   <div class="sev" style="margin-top:8px"><span class="on lo">خفيفة</span><span class="">متوسطة</span><span class="">شديدة</span></div>
-   </div><div class="card"><div class="row"><b>نيكل</b><span class="sp"></span><span class="chip xs grn">خفيفة</span></div>
-   <div class="sev" style="margin-top:8px"><span class="on lo">خفيفة</span><span class="">متوسطة</span><span class="">شديدة</span></div>
-   </div>
-  <div class="sp"></div>
-  <a class="btn" href="#home">حفظ الملف</a>
-</div></div></section><section class="s" id="home" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body tabbed">
-  <div class="row"><div><div class="sub">مساء الخير</div><div class="h1">سارة</div></div><span class="sp"></span><a style="width:40px;height:40px;border-radius:50%;background:var(--p-soft);display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--p)" href="#settings">س</a></div>
-  <div class="card" style="background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;border:0">
-    <div class="small" style="color:rgba(255,255,255,.75)">ملفك يحمي من</div>
-    <div style="font-size:15px;font-weight:600;margin:4px 0 8px">فول سوداني · حليب · عسل · نيكل</div>
-    <div class="row small" style="color:rgba(255,255,255,.75)"><span>ملف ياسر (ابنك) نشط أيضًا</span><span class="sp"></span><a style="color:#F4B6B6" href="#allergens">تعديل</a></div>
-  </div>
-  <div class="row"><div class="stat"><big>128</big><small>منتج فُحص</small></div><div class="stat"><big style="color:var(--red)">9</big><small>خطر تجنّبته</small></div><div class="stat"><big>4</big><small>بدائل اعتمدتها</small></div></div>
-  <a class="input" style="display:flex;gap:8px;align-items:center;color:var(--muted);text-align:right" href="#search"><span style="width:18px;height:18px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg></span>ابحثي باسم المنتج أو قوليه<span class="sp"></span><span style="width:18px;height:18px;color:var(--green)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></span></a>
-  <div class="lbl">افحصي حسب المكان</div>
-  <div class="chips"><a class="chip row" style="gap:6px" href="#product"><span style="width:16px;height:16px;color:var(--p);display:inline-flex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V10l9-5 9 5v11"></path><path d="M9 21v-6h6v6"></path><path d="M12 5V2h4"></path></svg></span>مقصف المدرسة</a><a class="chip row" style="gap:6px" href="#product"><span style="width:16px;height:16px;color:var(--p);display:inline-flex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11h11l2-7H6.5"></path><circle cx="9" cy="20" r="1.3"></circle><circle cx="17" cy="20" r="1.3"></circle></svg></span>بقالة / سوبرماركت</a><a class="chip row" style="gap:6px" href="#product"><span style="width:16px;height:16px;color:var(--p);display:inline-flex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2v8M5 2v5a2 2 0 0 0 4 0V2M7 10v12"></path><path d="M17 2v20M17 2c-2 0-3 3-3 7h3"></path></svg></span>مطعم</a><a class="chip row" style="gap:6px" href="#product"><span style="width:16px;height:16px;color:var(--p);display:inline-flex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"></path><path d="M16 10h2a2.5 2.5 0 0 1 0 5h-2M6 3v2M10 3v2"></path></svg></span>كافيه / مقصف</a><a class="chip row" style="gap:6px" href="#product"><span style="width:16px;height:16px;color:var(--p);display:inline-flex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11h14l-1.5 9h-11z"></path><path d="M6 11a6 6 0 0 1 12 0"></path><path d="M9 11v9M15 11v9"></path></svg></span>مخبز / حلويات</a><a class="chip row" style="gap:6px" href="#product"><span style="width:16px;height:16px;color:var(--p);display:inline-flex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="7" rx="3.5" transform="rotate(-35 12 12)"></rect><path d="M8.5 7.7l6 8.6"></path></svg></span>صيدلية</a></div>
-  <div class="lbl">آخر عمليات الفحص</div>
-  <div class="card list" style="padding:4px 14px">
-    <a class="item" href="#rSafe"><span class="row"><span class="dot" style="background:var(--green)"></span>شوفان بالتمر — 400غ</span><span class="l">آمن</span></a>
-    <a class="item" href="#rDanger"><span class="row"><span class="dot" style="background:var(--red)"></span>كريم أساس — 30مل</span><span class="l">خطر · لانولين</span></a>
-    <a class="item" href="#rWarn"><span class="row"><span class="dot" style="background:var(--amber)"></span>بسكويت شوكولاتة</span><span class="l">قد يحتوي مكسّرات</span></a>
-  </div>
-  <div class="lbl">اليوم في محيطك</div>
-  <div class="card row" style="gap:12px"><div><div style="font-weight:500">لقاح الأشجار: مرتفع</div><div class="small">الدمام · موسم المسكيت — خذي دواءك قبل الخروج</div></div><span class="sp"></span><span class="chip xs amb">4/5</span></div>
-  <a class="btn soft sm" href="#assistant">اسألي حاسّة قبل الطلب من مطعم</a>
-</div><div class="tabs"><a class="on" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg><span>الرئيسية</span></a><a class="" href="#log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h12M8 12h12M8 18h12M4 6h0M4 12h0M4 18h0"></path></svg><span>السجل</span></a><div style="width:60px"></div><a class="" href="#alts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h11l-3-3M20 17H9l3 3"></path></svg><span>البدائل</span></a><a class="" href="#sos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h0M10.3 3.9L2.5 17.5A1.5 1.5 0 0 0 3.8 20h16.4a1.5 1.5 0 0 0 1.3-2.5L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg><span>طوارئ</span></a></div><a class="fab" aria-label="مسح" href="#place"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M4 12h16"></path></svg></a></div></section><section class="s" id="place" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body" style="gap:10px">
-  <div class="hdr"><a class="back" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">وين أنت الآن؟</div></div>
-  <div class="sub">اختر المكان، وبنعرض المنتجات اللي عادةً تلقاها فيه.</div>
-  <div class="grid3"><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V10l9-5 9 5v11"></path><path d="M9 21v-6h6v6"></path><path d="M12 5V2h4"></path></svg></span>مقصف المدرسة</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11h11l2-7H6.5"></path><circle cx="9" cy="20" r="1.3"></circle><circle cx="17" cy="20" r="1.3"></circle></svg></span>بقالة / سوبرماركت</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2v8M5 2v5a2 2 0 0 0 4 0V2M7 10v12"></path><path d="M17 2v20M17 2c-2 0-3 3-3 7h3"></path></svg></span>مطعم</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"></path><path d="M16 10h2a2.5 2.5 0 0 1 0 5h-2M6 3v2M10 3v2"></path></svg></span>كافيه / مقصف</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11h14l-1.5 9h-11z"></path><path d="M6 11a6 6 0 0 1 12 0"></path><path d="M9 11v9M15 11v9"></path></svg></span>مخبز / حلويات</button><button class="tile on"><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="7" rx="3.5" transform="rotate(-35 12 12)"></rect><path d="M8.5 7.7l6 8.6"></path></svg></span>صيدلية</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9V4l6 2v3"></path><rect x="8" y="9" width="8" height="5" rx="1"></rect><rect x="6" y="14" width="12" height="7" rx="1.5"></rect></svg></span>محل مكياج وعناية</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10h6l2 3v7a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-7z"></path><path d="M10 10V7h4v3M12 4v3M16 6h3"></path></svg></span>محل عطور وبخور</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="2.5"></circle><path d="M12 6.5a3 3 0 1 0-3 2.5M12 6.5a3 3 0 1 1 3 2.5M9 9a3 3 0 1 0 3 2.5M15 9a3 3 0 1 1-3 2.5"></path><path d="M12 11.5V21M12 17c-2 0-4-1-4-3M12 18c2 0 4-1 4-3"></path></svg></span>محل ورد ونباتات</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"></circle><path d="M9 6l3-3 3 3-3 2z"></path></svg></span>إكسسوارات ومجوهرات</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg></span>البيت</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></span>مكان آخر</button></div>
-  <div class="sp"></div>
-  <a class="btn" href="#product">متابعة</a>
-</div></div></section><section class="s" id="product" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body" style="gap:10px">
-  <div class="hdr"><a class="back" href="#place"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">وش المنتج؟</div></div>
-  <div class="crumb">المكان: <b>صيدلية</b></div>
-  <div class="sub">أدوية ومنتجات طبية بدون وصفة.</div>
-  <div class="grid2"><button class="tile on"><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="7" rx="3.5" transform="rotate(-35 12 12)"></rect><path d="M8.5 7.7l6 8.6"></path></svg></span>دواء بدون وصفة</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4a2 2 0 0 1 4 0v10a4 4 0 1 1-4 0z"></path><path d="M12 9v6"></path></svg></span>فيتامينات ومكمّلات</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9V5h6v4l2 2v9a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-9z"></path><path d="M12 2v3"></path></svg></span>كريم أو مرهم</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 8h6v12a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"></path><path d="M10 8V6h4v2M12 2v4"></path></svg></span>حليب أطفال</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="10" rx="4"></rect><path d="M8 12c1-1 2-1 3 0"></path></svg></span>شامبو وصابون طبي</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></span>شيء آخر — صوّره</button></div>
-  <div class="card small">نقرأ المادة الفعّالة والسواغات (مثل اللاكتوز، الجيلاتين، الفول السوداني في بعض الأدوية).</div>
-  <div class="sp"></div>
-  <a class="btn" href="#input">متابعة</a>
-</div></div></section><section class="s" id="input" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#product"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">كيف تبي تدخله؟</div></div>
-  <div class="crumb">تفحص: <b>دواء بدون وصفة</b></div>
-  <div class="chips"><button class="chip ">اكتب</button><button class="chip on">تكلّم</button><button class="chip ">باركود</button><button class="chip ">صوّر المكوّنات</button></div>
-  
-  <a class="micbig" href="#drug"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></a><div class="small" style="text-align:center;font-size:12px">اضغط وقل اسم المنتج</div>
-  <div class="sp"></div>
-  <a class="btn green" href="#drug">افحص الآن</a>
-</div></div></section><section class="s" id="scan" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">مسح منتج</div></div>
-  <div class="chips"><a class="chip on" href="#scan">باركود</a><a class="chip " href="#ocr">قائمة المكوّنات</a><a class="chip " href="#menu">منيو مطعم</a><a class="chip " href="#photo">تعرّف بالصورة</a></div>
-  <div class="cam"><div class="frame"></div><div class="line"></div>
-    <div style="color:rgba(255,255,255,.55);font-size:11px;letter-spacing:4px;font-family:monospace">||| || ||||| || |||</div>
-    <div class="lbl2">وجّهي الكاميرا نحو الباركود</div></div>
-  <div class="row" style="font-size:12.5px"><span>الفحص لـ:</span><button class="chip xs on">سارة</button><button class="chip xs ">ياسر</button><button class="chip xs ">الاثنين</button></div>
-  <a class="btn green" href="#rWarn">محاكاة المسح</a>
-  <div class="small" style="text-align:center">أو أدخلي الرقم يدويًا · 6281000012345</div>
-</div></div></section><section class="s" id="ocr" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">تصوير المكوّنات</div></div>
-  <div class="chips"><a class="chip " href="#scan">باركود</a><a class="chip on" href="#ocr">قائمة المكوّنات</a><a class="chip " href="#menu">منيو مطعم</a><a class="chip " href="#photo">تعرّف بالصورة</a></div>
-  <div class="cam" style="background:#ECECF0"><div class="frame" style="border-color:var(--ink)"></div>
-    <div class="menu-img" style="margin:0 44px;font-size:8.5px">INGREDIENTS: Aqua, Glycerin, Cetearyl Alcohol, <span class="hl-r">Arachis Hypogaea (Peanut) Oil</span>, Butyrospermum Parkii Butter, <span class="hl-r">Lanolin</span>, Tocopherol, <span class="hl-a">Parfum</span>, Phenoxyethanol, Citric Acid.</div>
-    <div class="lbl2" style="color:var(--ink)">تم التعرّف على 9 مكوّنات — المطابقة مظلّلة</div></div>
-  <div class="card small">تُظلَّل المكوّنات المطابقة لملفك مباشرة على الصورة قبل عرض النتيجة.</div>
-  <a class="btn" href="#rDanger">عرض النتيجة</a>
-</div></div></section><section class="s" id="rSafe" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">شوفان بالتمر — 400غ</div></div>
-  <div class="ring ok"><big>آمن</big><small>لملف سارة</small></div>
-  <div class="prodcard"><div class="img" style="color:var(--p)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18a9 9 0 0 1-18 0z"></path><path d="M8 8c1-2 3-2 4 0 1-2 3-2 4 0"></path></svg></div><div><b>شوفان بالتمر — 400غ</b><span>باركود 6281001234567 · بنده · 14.95 ر.س</span></div></div>
-  <div class="card"><div class="lbl" style="margin:0 0 4px">لماذا؟</div><div style="font-size:13px">لا يحتوي على أيّ من مسبّباتك الأربعة، والمصنع لا يذكر تلوّثًا تبادليًا.</div></div>
-  <div class="card list" style="padding:4px 14px"><div class="item"><span>شوفان كامل</span><span class="l">آمن</span></div><div class="item"><span>تمر</span><span class="l">آمن</span></div><div class="item"><span>زيت دوّار الشمس</span><span class="l">آمن</span></div><div class="item"><span>ملح</span><span class="l">آمن</span></div></div>
-  <div class="sp"></div><button class="btn ghost">أضيفي للمفضّلة</button></div></div></section><section class="s" id="rWarn" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">بسكويت شوكولاتة — 90غ</div></div>
-  <div class="ring warn"><big>تنبيه</big><small>قد يحتوي</small></div>
-  <div class="prodcard"><div class="img" style="color:var(--p)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-8-8 3 3 0 0 0 3 3 3 3 0 0 0 3 3 2 2 0 0 0 2 2z"></path><circle cx="9" cy="10" r=".8"></circle><circle cx="13" cy="15" r=".8"></circle><circle cx="8" cy="15" r=".8"></circle></svg></div><div><b>بسكويت دايجستف بالشوكولاتة</b><span>باركود 5000168001234 · مستورد · 7.50 ر.س</span></div></div>
-  <div class="card" style="border-color:var(--amber);background:var(--amber-soft);font-size:13px"><b>«قد يحتوي على آثار مكسّرات»</b> — مصنّع في خط إنتاج مشترك. حساسيتك من الفول السوداني <b>شديدة</b>، لذلك ننصح بالتجنّب.</div>
-  <div class="card list" style="padding:4px 14px"><div class="item"><span>دقيق قمح</span><span class="l">آمن</span></div><div class="item"><span>سكر · كاكاو · زيت نخيل</span><span class="l">آمن</span></div><div class="item"><span style="color:var(--amber-ink)">آثار مكسّرات (تلوّث تبادلي)</span><span class="l" style="color:var(--amber-ink)">تنبيه</span></div></div>
-  <a class="btn" href="#alts">شاهدي 5 بدائل آمنة</a>
-  <a class="small" style="text-align:center" href="#report">أبلغي عن خطأ في البيانات</a></div></div></section><section class="s" id="rDanger" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">كريم أساس — 30مل</div></div>
-  <div class="ring bad"><big>خطر</big><small>مكوّنان</small></div>
-  <div class="prodcard"><div class="img" style="color:var(--p)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9V5h6v4l2 2v9a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-9z"></path><path d="M12 2v3"></path></svg></div><div><b>كريم أساس سائل — 30مل</b><span>قرأناه من قائمة INCI · 9 مكوّنات · مطابقة 96%</span></div></div>
-  <div class="card list" style="border-color:var(--red);padding:4px 14px">
-    <div class="item"><div><b style="color:var(--red-ink)">فول سوداني</b><div class="l">ظهر باسم: Arachis Hypogaea Oil</div></div><span class="chip xs red">شديدة</span></div>
-    <div class="item"><div><b style="color:var(--red-ink)">لانولين</b><div class="l">ظهر باسم: Lanolin</div></div><span class="chip xs red">بشرة</span></div>
-    <div class="item"><div><b style="color:var(--amber-ink)">عطر</b><div class="l">Parfum — مكوّن غير مفصّل</div></div><span class="chip xs amb">مجهول</span></div></div>
-  <div class="card small">زيت الفول السوداني في منتجات البشرة قد يسبّب تفاعلًا لأصحاب الحساسية الشديدة حتى دون تناوله.</div>
-  <a class="btn" href="#alts">شاهدي بدائل آمنة</a>
-  <a class="btn red sm" href="#sos">لو ظهر تفاعل — الطوارئ</a></div></div></section><section class="s" id="drug" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">دواء بدون وصفة</div></div>
-  <div class="ring warn"><big>تنبيه</big><small>سواغ</small></div>
-  <div class="prodcard"><div class="img" style="color:var(--p)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="7" rx="3.5" transform="rotate(-35 12 12)"></rect><path d="M8.5 7.7l6 8.6"></path></svg></div><div><b>لوراتادين 10 ملغ — 10 أقراص</b><span>صيدلية النهدي · 12.50 ر.س · مسجّل لدى هيئة الغذاء والدواء</span></div></div>
-  <div class="card list" style="border-color:var(--amber);padding:4px 14px">
-    <div class="item"><div><b>المادة الفعّالة: لوراتادين</b><div class="l">لا تعارض مع ملفك</div></div><span class="chip xs grn">آمن</span></div>
-    <div class="item"><div><b style="color:var(--amber-ink)">لاكتوز أحادي الهيدرات</b><div class="l">سواغ — مشتق من الحليب (كمية ضئيلة)</div></div><span class="chip xs amb">حليب</span></div></div>
-  <div class="card small">حساسية الحليب عندك <b>متوسطة</b>. اللاكتوز في الأقراص عادةً لا يسبّب تفاعلًا إلا للحالات الشديدة — استشر الصيدلي.</div>
-  <a class="btn" href="#alts">بديل بدون لاكتوز</a></div></div></section><section class="s" id="alts" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body tabbed">
-  <div class="hdr"><a class="back" href="#rDanger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">بدائل آمنة للبشرة الحسّاسة</div></div>
-  <div class="chips"><button class="chip on">الأقرب تركيبًا</button><button class="chip ">الأرخص</button><button class="chip ">الأعلى تقييمًا</button></div>
-  <div class="card" style="padding:4px 14px">
-    <div class="alt"><div class="thumb " style="color:var(--p)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9V5h6v4l2 2v9a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-9z"></path><path d="M12 2v3"></path></svg></div><div><div class="nm">مرطّب للبشرة الجافة والحسّاسة</div><div class="ds">خالٍ من العطور واللانولين · 82 ر.س</div></div><span class="sp"></span><span class="badge">92% تطابق</span></div><div class="alt"><div class="thumb a" style="color:var(--p)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="10" rx="4"></rect><path d="M8 12c1-1 2-1 3 0"></path></svg></div><div><div class="nm">كريم مهدّئ للبشرة الحسّاسة</div><div class="ds">بدون عطور أو لانولين · 65 ر.س</div></div><span class="sp"></span><span class="badge">88%</span></div><div class="alt"><div class="thumb b" style="color:var(--p)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c0-8 5-13 14-13-1 9-6 14-14 13z"></path><path d="M5 19l9-9"></path></svg></div><div><div class="nm">كريم أساس معدني خالٍ من الزيوت</div><div class="ds">بدون عطور · 96 ر.س</div></div><span class="sp"></span><span class="badge">81%</span></div>
-  </div>
-  <div class="card small">مرتّبة حسب تشابه الغرض والقوام مع استبعاد كل مسبّباتك. الأسعار من متاجر محلية وقد تتغيّر.</div>
-  <div class="sp"></div>
-  <button class="btn ghost">أين أجدها قريبًا مني</button>
-</div><div class="tabs"><a class="" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg><span>الرئيسية</span></a><a class="" href="#log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h12M8 12h12M8 18h12M4 6h0M4 12h0M4 18h0"></path></svg><span>السجل</span></a><div style="width:60px"></div><a class="on" href="#alts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h11l-3-3M20 17H9l3 3"></path></svg><span>البدائل</span></a><a class="" href="#sos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h0M10.3 3.9L2.5 17.5A1.5 1.5 0 0 0 3.8 20h16.4a1.5 1.5 0 0 0 1.3-2.5L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg><span>طوارئ</span></a></div><a class="fab" aria-label="مسح" href="#place"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M4 12h16"></path></svg></a></div></section><section class="s" id="assistant" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body" style="gap:8px">
-  <div class="hdr"><a class="back" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">اسألي حاسّة</div><span class="chip xs">لا يشخّص · يوجّه فقط</span></div>
-  <div class="msg me">بنروح مطعم إيطالي بكرة، وش أنتبه له؟</div><div class="msg ai">مع حساسية الحليب والفول السوداني، انتبهي في المطاعم الإيطالية لـ:<br>• البيستو (قد يحتوي مكسّرات أو جبن)<br>• صلصات الكريمة والألفريدو<br>• البيتزا — اطلبي بدون جبن أو اسألي عن الموزاريلا النباتية.<br>تقدرين تصوّرين المنيو وأنا ألوّن الأطباق الآمنة.</div><div class="msg me">وش أقول للنادل؟</div><div class="msg ai">جاهزة لك بطاقة تقولينها أو تعرضينها: «لديّ حساسية شديدة من الفول السوداني والحليب. هل يمكن التأكد من خلوّ الطبق وأدوات التحضير منهما؟»</div>
-  <div class="sp"></div>
-  <div class="row"><input class="input" placeholder="اكتبي سؤالك…" id="chatIn"><a class="btn sm" style="width:auto;padding:10px 14px" href="#assistant">إرسال</a></div>
-  <div class="chips"><a class="chip xs" href="#assistant">وش أقول للنادل؟</a><a class="chip xs" href="#assistant">بديل للزبدة؟</a><a class="chip xs" href="#assistant">هل الطحينة فيها سمسم؟</a></div>
-</div></div></section><section class="s" id="log" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body tabbed">
-  <div class="hdr"><div class="h2">سجل التفاعلات والاكتشاف</div></div>
-  <div class="card" style="background:var(--amber-soft);border-color:var(--amber)">
-    <div style="font-weight:600;color:var(--amber-ink)">مادة مشتبه بها: السمسم</div>
-    <div class="small" style="color:var(--ink2);margin:3px 0 8px">ظهر في 3 من 4 منتجات سجّلتِ بعدها تفاعلًا خلال شهرين، وليس في ملفك الحالي. ننصح بمراجعة طبيب حساسية.</div>
-    <div class="bar"><i style="width:75%;background:var(--amber)"></i></div>
-    <div class="row small" style="margin-top:8px"><span>أضيفيه كتنبيه مؤقت</span><span class="sp"></span><button class="toggle"></button></div>
-  </div>
-  <div class="lbl">تفاعلات سجّلتِها</div>
-  <div class="card list" style="padding:4px 14px">
-    <div class="item"><div>طفح جلدي — خفيف<div class="l">بعد: حمّص بالطحينة · 3 سبتمبر</div></div></div>
-    <div class="item"><div>حكّة وتورّم شفاه<div class="l">بعد: كعك سمسم · 22 أغسطس</div></div></div>
-    <div class="item"><div>طفح — خفيف<div class="l">بعد: زيت شعر · 9 أغسطس</div></div></div>
-  </div>
-  <a class="btn ghost" href="#report">+ سجّلي تفاعلًا جديدًا</a>
-</div><div class="tabs"><a class="" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg><span>الرئيسية</span></a><a class="on" href="#log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h12M8 12h12M8 18h12M4 6h0M4 12h0M4 18h0"></path></svg><span>السجل</span></a><div style="width:60px"></div><a class="" href="#alts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h11l-3-3M20 17H9l3 3"></path></svg><span>البدائل</span></a><a class="" href="#sos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h0M10.3 3.9L2.5 17.5A1.5 1.5 0 0 0 3.8 20h16.4a1.5 1.5 0 0 0 1.3-2.5L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg><span>طوارئ</span></a></div><a class="fab" aria-label="مسح" href="#place"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M4 12h16"></path></svg></a></div></section><section class="s" id="sos" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body tabbed">
-  <div class="hdr"><div class="h2">ماذا تشعرين الآن؟</div></div>
-  <div class="sub">اختاري الأعراض، وسنرشدك للخطوة الصحيحة فورًا.</div>
-  <div class="chips"><button class="chip ">حكّة أو طفح</button><button class="chip on">تورّم في الوجه أو الشفاه</button><button class="chip ">غثيان</button><button class="chip on">ضيق تنفّس</button><button class="chip ">دوخة</button><button class="chip ">بحّة صوت</button></div>
-  <div class="card" style="border-color:var(--red);background:var(--red-soft);font-size:13px"><b style="color:var(--red-ink)">أعراض تشير إلى تفاعل شديد.</b> لا تنتظري — انتقلي لخطوات الطوارئ.</div>
-  <div class="sp"></div>
-  <a class="btn red" href="#sosSteps">ابدئي خطوات الطوارئ</a>
-  <button class="btn ghost">الأعراض خفيفة — نصائح التعامل</button>
-</div><div class="tabs"><a class="" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg><span>الرئيسية</span></a><a class="" href="#log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h12M8 12h12M8 18h12M4 6h0M4 12h0M4 18h0"></path></svg><span>السجل</span></a><div style="width:60px"></div><a class="" href="#alts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h11l-3-3M20 17H9l3 3"></path></svg><span>البدائل</span></a><a class="on" href="#sos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h0M10.3 3.9L2.5 17.5A1.5 1.5 0 0 0 3.8 20h16.4a1.5 1.5 0 0 0 1.3-2.5L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg><span>طوارئ</span></a></div><a class="fab" aria-label="مسح" href="#place"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M4 12h16"></path></svg></a></div></section><section class="s" id="sosSteps" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#sos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">خطوات الطوارئ</div></div>
-  <button class="sos"><big>997</big><small>اضغطي للاتصال بالهلال الأحمر</small></button>
-  <div class="stepn"><i>1</i><span>استخدمي قلم الإبينفرين في الفخذ الخارجي فورًا، وأبقيه 3 ثوانٍ.</span></div>
-  <div class="stepn"><i>2</i><span>اجلسي أو استلقي ولا تقفي فجأة.</span></div>
-  <div class="stepn"><i>3</i><span>لا تأخذي جرعة ثانية إلا إذا لم تتحسّني خلال 5–15 دقيقة.</span></div>
-  <div class="stepn"><i>4</i><span>ابقي مع شخص حتى وصول الإسعاف.</span></div>
-  <div class="card row small"><span class="dot" style="background:var(--green)"></span><span>تمت مشاركة موقعك مع: أمّي</span><span class="sp"></span><span style="color:var(--green)">✓</span></div>
-  <div class="row"><a class="btn ghost sm" href="#medcard">البطاقة الطبية</a><button class="btn ghost sm">مؤقّت الجرعة</button></div>
-</div></div></section><section class="s" id="medcard" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#sosSteps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">البطاقة الطبية</div></div>
-  <div class="sub">تُعرض لأي شخص يساعدك ولو كان الهاتف مقفلًا.</div>
-  <div class="idcard"><div class="row" style="align-items:flex-start"><div style="flex:1">
-    <div class="k">الاسم</div><div class="v">سارة العمري</div>
-    <div class="k">حساسية شديدة</div><div class="v">فول سوداني · حليب</div>
-    <div class="k">الدواء</div><div class="v">إبينفرين 0.3 ملغ — في الحقيبة</div>
-    <div class="k">فصيلة الدم</div><div class="v">O+</div></div><div class="qr"></div></div>
-    <div class="k" style="margin-top:4px">جهة الاتصال: أمّي — 05x xxx xxxx</div></div>
-  <div class="card list" style="padding:4px 14px">
-    <div class="kv"><span>إظهار على شاشة القفل</span><button class="toggle"></button></div>
-    <div class="kv"><span>مشاركة الموقع تلقائيًا عند الطوارئ</span><button class="toggle"></button></div>
-    <div class="kv"><span>تذكير صلاحية الإبينفرين</span><span class="small">14 نوفمبر</span></div></div>
-  <div class="sp"></div><button class="btn ghost">اطبعي نسخة للمحفظة</button>
-</div></div></section><section class="s" id="menu" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">مطعم لا بيازا — المنيو</div></div>
-  <div class="chips"><a class="chip " href="#scan">باركود</a><a class="chip " href="#ocr">قائمة المكوّنات</a><a class="chip on" href="#menu">منيو مطعم</a><a class="chip " href="#photo">تعرّف بالصورة</a></div>
-  <div class="row small"><span class="chip xs amb">غير شريك</span><span>صوّرتِ المنيو — لوّنّا الأطباق حسب ملفك (فول سوداني · حليب).</span></div>
-  <div class="card list" style="padding:4px 14px">
-    <div class="item"><div><b>مارغريتا</b><div class="l">جبن موزاريلا</div></div><span class="chip xs red">حليب</span></div>
-    <div class="item"><div><b>بيستو باستا</b><div class="l">عادةً: صنوبر + بارميزان</div></div><span class="chip xs red">افتراض</span></div>
-    <a class="item" href="#dish"><div><b>سلطة التين بالجبن الطازج</b><div class="l">اسألي: أي جبن؟ وهل المكسّرات جوز؟</div></div><span class="chip xs amb">اسألي</span></a>
-    <div class="item"><div><b>سلطة روكا بالرمّان</b><div class="l">اسألي: أي زيت للصلصة؟</div></div><span class="chip xs amb">اسألي</span></div>
-    <div class="item"><div><b>ستيك مشوي</b><div class="l">اسألي: زبدة عند التقديم؟</div></div><span class="chip xs amb">اسألي</span></div></div>
-  <div class="card small" style="border-color:var(--amber);background:var(--amber-soft);color:var(--ink2)">هذا المطعم غير شريك، فالنتائج افتراض من الوصفات الشائعة. أكّدي مع النادل قبل الطلب.</div>
-  <a class="btn" href="#dish">اختاري طبقًا لتأكيده</a>
-</div></div></section><section class="s" id="dish" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">تأكيد الطبق</div></div>
-  <div class="pic"><span>سلطة التين بالجبن الطازج</span></div>
-  <div class="row"><span class="chip xs amb">تنبيه — يحتاج تأكيدًا</span></div>
-  <div class="card list" style="padding:4px 14px"><div class="lbl" style="padding:8px 0 2px">اسألي النادل — وسجّلي الجواب</div>
-    <div class="kv"><span>هل يمكن تقديم الطبق بدون الجبن؟</span><span class="chip xs grn">لا ✓</span></div>
-    <div class="kv"><span>المكسّرات جوز أم فول سوداني؟</span><span class="chip xs grn">جوز ✓</span></div>
-    <div class="kv"><span>هل الصلصة فيها زبدة أو كريمة؟</span><button class="chip xs">لم يُسأل</button></div></div>
-  <div class="card small">أكّد زبونان هذا الطبق في نفس الفرع خلال الشهر الماضي.</div>
-  <a class="btn ghost" href="#waiter">اعرضي بطاقة النادل</a>
-  <div class="sp"></div>
-  <a class="btn" href="#home">أكّدت مع النادل — سجّلي الطبق</a>
-</div></div></section><section class="s" id="waiter" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body" style="background:linear-gradient(160deg,#3A79C5,#5A93D9 70%,#F4B6B6 170%);color:#fff">
-  <a class="back" style="color:rgba(255,255,255,.7)" href="#dish"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>رجوع</a>
-  <div class="small" style="color:rgba(255,255,255,.7);text-align:center">اعرضي الشاشة للنادل أو الشيف</div>
-  <div style="background:#fff;color:var(--ink);border-radius:18px;padding:16px;flex:1;display:flex;flex-direction:column;gap:10px">
-    <div style="font-size:19px;font-weight:600;color:var(--red-ink);line-height:1.4">لديّ حساسية شديدة من:<br>الفول السوداني والحليب</div>
-    <div style="font-size:13.5px">الرجاء التأكد أن الطبق وأدوات تحضيره وزيت القلي خالية منهما، بما فيها الزبدة والسمن والجبن والصلصات الجاهزة.</div>
-    <div style="border-top:1px dashed var(--line)"></div>
-    <div style="direction:ltr;text-align:left;font-size:12.5px;line-height:1.6;color:var(--ink2)"><b style="color:var(--red-ink)">Severe allergy: peanuts &amp; milk.</b><br>Please make sure the dish, utensils and frying oil are free of both, including butter, ghee, cheese and ready-made sauces.</div>
-    <div class="sp"></div>
-    <div class="small" style="text-align:center">طبق مطلوب: سلطة التين — بدون جبن</div></div>
-  <button class="btn" style="background:#fff;color:var(--p)">انسخي كملاحظة للطلب أونلاين</button>
-</div></div></section><section class="s" id="elder" data-mode="elder"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body elder" style="gap:14px">
-  <a class="back" href="#caregiver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>رجوع</a>
-  <div style="font-size:26px;font-weight:600">أهلًا أبو خالد</div>
-  <a class="btn" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:24px" href="#scan"><span style="width:48px;height:48px"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M4 12h16"></path></svg></span>افحص منتج</a>
-  <button class="btn ghost" style="display:flex;align-items:center;justify-content:center;gap:10px"><span style="width:26px;height:26px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></span>قل اسم المنتج</button>
-  <a class="btn red" href="#sosSteps">طوارئ</a>
-  <div class="small" style="text-align:center;font-size:13px">النتيجة تُقرأ بصوت عالٍ · ابنك خالد يرى الفحوصات</div>
-</div></div></section><section class="s" id="place_elder" data-mode="elder"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body" style="gap:10px">
-  <div class="hdr"><a class="back" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">وين أنت الآن؟</div></div>
-  <div class="sub">اختر المكان، وبنعرض المنتجات اللي عادةً تلقاها فيه.</div>
-  <div class="grid3"><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V10l9-5 9 5v11"></path><path d="M9 21v-6h6v6"></path><path d="M12 5V2h4"></path></svg></span>مقصف المدرسة</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11h11l2-7H6.5"></path><circle cx="9" cy="20" r="1.3"></circle><circle cx="17" cy="20" r="1.3"></circle></svg></span>بقالة / سوبرماركت</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2v8M5 2v5a2 2 0 0 0 4 0V2M7 10v12"></path><path d="M17 2v20M17 2c-2 0-3 3-3 7h3"></path></svg></span>مطعم</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"></path><path d="M16 10h2a2.5 2.5 0 0 1 0 5h-2M6 3v2M10 3v2"></path></svg></span>كافيه / مقصف</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11h14l-1.5 9h-11z"></path><path d="M6 11a6 6 0 0 1 12 0"></path><path d="M9 11v9M15 11v9"></path></svg></span>مخبز / حلويات</button><button class="tile on"><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="7" rx="3.5" transform="rotate(-35 12 12)"></rect><path d="M8.5 7.7l6 8.6"></path></svg></span>صيدلية</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9V4l6 2v3"></path><rect x="8" y="9" width="8" height="5" rx="1"></rect><rect x="6" y="14" width="12" height="7" rx="1.5"></rect></svg></span>محل مكياج وعناية</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10h6l2 3v7a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-7z"></path><path d="M10 10V7h4v3M12 4v3M16 6h3"></path></svg></span>محل عطور وبخور</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="2.5"></circle><path d="M12 6.5a3 3 0 1 0-3 2.5M12 6.5a3 3 0 1 1 3 2.5M9 9a3 3 0 1 0 3 2.5M15 9a3 3 0 1 1-3 2.5"></path><path d="M12 11.5V21M12 17c-2 0-4-1-4-3M12 18c2 0 4-1 4-3"></path></svg></span>محل ورد ونباتات</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="6"></circle><path d="M9 6l3-3 3 3-3 2z"></path></svg></span>إكسسوارات ومجوهرات</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg></span>البيت</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></span>مكان آخر</button></div>
-  <div class="sp"></div>
-  <a class="btn" href="#product">متابعة</a>
-</div></div></section><section class="s" id="input_elder" data-mode="elder"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#product"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">قل اسم المنتج</div></div>
-  <div class="crumb">تفحص: <b>دواء بدون وصفة</b></div>
-  <div class="chips"><button class="chip ">اكتب</button><button class="chip on">تكلّم</button><button class="chip ">باركود</button><button class="chip ">صوّر المكوّنات</button></div>
-  
-  <a class="micbig" href="#rSafe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></a><div class="small" style="text-align:center;font-size:15px">اضغط وقل اسم المنتج</div>
-  <div class="sp"></div>
-  <a class="btn green" href="#rSafe">افحص الآن</a>
-</div></div></section><section class="s" id="kid" data-mode="kid"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body kid" style="text-align:center;gap:12px">
-  <div class="row"><a class="back" href="#input_kid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>رجوع</a><span class="sp"></span><a class="small" href="#caregiver">وضع الأم</a></div>
-  <div class="small">وضع الأطفال — ياسر (8 سنوات)</div>
-  <div style="width:140px;height:140px;border-radius:50%;background:var(--red-soft);border:7px solid var(--red);margin:4px auto;display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:48px;line-height:1">✋</span><span style="font-size:18px;font-weight:600;color:var(--red-ink)">توقّف</span></div>
-  <div style="font-size:19px;font-weight:600;line-height:1.4">دواء بدون وصفة فيه<br>فول سوداني 🥜</div>
-  <div style="font-size:14px">لا تأكله. اسأل ماما أو المعلّمة عن بديل.</div>
-  <div class="card" style="background:#fff;font-size:13px"><b>تم إرسال تنبيه إلى ماما</b> — المكان: المدرسة، 10:20 ص</div>
-  <div class="sp"></div>
-  <button class="btn" style="border-radius:20px;font-size:16px">أرني بديلًا ألذّ 🍪</button>
-  <button class="btn ghost" style="border-radius:20px">اتصل بماما</button>
-</div></div></section><section class="s" id="place_kid" data-mode="kid"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body" style="gap:10px">
-  <div class="hdr"><a class="back" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">وين أنت الآن؟</div></div>
-  <div class="sub">اختر المكان، وبنعرض المنتجات اللي عادةً تلقاها فيه.</div>
-  <div class="grid3"><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V10l9-5 9 5v11"></path><path d="M9 21v-6h6v6"></path><path d="M12 5V2h4"></path></svg></span>مقصف المدرسة</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11h11l2-7H6.5"></path><circle cx="9" cy="20" r="1.3"></circle><circle cx="17" cy="20" r="1.3"></circle></svg></span>بقالة / سوبرماركت</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2v8M5 2v5a2 2 0 0 0 4 0V2M7 10v12"></path><path d="M17 2v20M17 2c-2 0-3 3-3 7h3"></path></svg></span>مطعم</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"></path><path d="M16 10h2a2.5 2.5 0 0 1 0 5h-2M6 3v2M10 3v2"></path></svg></span>كافيه / مقصف</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11h14l-1.5 9h-11z"></path><path d="M6 11a6 6 0 0 1 12 0"></path><path d="M9 11v9M15 11v9"></path></svg></span>مخبز / حلويات</button><button class="tile on"><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="7" rx="3.5" transform="rotate(-35 12 12)"></rect><path d="M8.5 7.7l6 8.6"></path></svg></span>صيدلية</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="2.5"></circle><path d="M12 6.5a3 3 0 1 0-3 2.5M12 6.5a3 3 0 1 1 3 2.5M9 9a3 3 0 1 0 3 2.5M15 9a3 3 0 1 1-3 2.5"></path><path d="M12 11.5V21M12 17c-2 0-4-1-4-3M12 18c2 0 4-1 4-3"></path></svg></span>محل ورد ونباتات</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg></span>البيت</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></span>مكان آخر</button></div>
-  <div class="sp"></div>
-  <a class="btn" href="#product_kid">متابعة</a>
-</div></div></section><section class="s" id="product_kid" data-mode="kid"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body" style="gap:10px">
-  <div class="hdr"><a class="back" href="#place_kid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">وش المنتج؟</div></div>
-  <div class="crumb">المكان: <b>صيدلية</b></div>
-  <div class="sub">أدوية ومنتجات طبية بدون وصفة.</div>
-  <div class="grid2"><button class="tile on"><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="7" rx="3.5" transform="rotate(-35 12 12)"></rect><path d="M8.5 7.7l6 8.6"></path></svg></span>دواء بدون وصفة</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4a2 2 0 0 1 4 0v10a4 4 0 1 1-4 0z"></path><path d="M12 9v6"></path></svg></span>فيتامينات ومكمّلات</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9V5h6v4l2 2v9a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-9z"></path><path d="M12 2v3"></path></svg></span>كريم أو مرهم</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 8h6v12a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"></path><path d="M10 8V6h4v2M12 2v4"></path></svg></span>حليب أطفال</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="10" rx="4"></rect><path d="M8 12c1-1 2-1 3 0"></path></svg></span>شامبو وصابون طبي</button><button class="tile "><span class="em"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></span>شيء آخر — صوّره</button></div>
-  <div class="card small">نقرأ المادة الفعّالة والسواغات (مثل اللاكتوز، الجيلاتين، الفول السوداني في بعض الأدوية).</div>
-  <div class="sp"></div>
-  <a class="btn" href="#input_kid">متابعة</a>
-</div></div></section><section class="s" id="input_kid" data-mode="kid"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#product_kid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">وش بتفحص اليوم؟</div></div>
-  <div class="crumb">تفحص: <b>دواء بدون وصفة</b></div>
-  
-  
-  <a class="micbig" href="#kid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></a><div class="small" style="text-align:center;font-size:12px">اضغط وقل اسم الشيء 🎈</div>
-  <div class="sp"></div>
-  <a class="btn green" href="#kid">افحص! ✨</a>
-</div></div></section><section class="s" id="caregiver" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">من أرعاهم</div></div>
-  <div class="card list" style="padding:4px 14px">
-    <a class="item" href="#kid"><div><b>ياسر</b> · 8 سنوات<div class="l">سوار NFC مفعّل · المدرسة الابتدائية 12</div></div><span class="dot" style="background:var(--green)"></span></a>
-    <a class="item" href="#elder"><div><b>أبو خالد</b> · الوالد<div class="l">وضع كبار السن · يقرأ النتائج صوتيًا</div></div><span class="dot" style="background:var(--green)"></span></a></div>
-  <div class="lbl">تنبيهات اليوم</div>
-  <div class="card" style="border-color:var(--red)"><div style="font-weight:600;color:var(--red-ink)">ياسر فحص «بسكويت شوكولاتة» — خطر</div><div class="small">المدرسة · 10:20 ص · لم يؤكل حسب ما سجّل</div></div>
-  <div class="card"><div style="font-weight:600">أبو خالد فحص «كريم يدين» — آمن</div><div class="small">المنزل · 9:05 ص</div></div>
-  <div class="card"><div class="lbl" style="margin:0 0 4px">سوار ياسر — ما يراه من يمسحه</div><div style="font-size:13px">اسمه، الحساسية (فول سوداني — شديدة)، مكان قلم الإبينفرين، ورقم ماما. بلا أي بيانات أخرى.</div></div>
-  <div class="sp"></div><button class="btn ghost">+ أضيفي شخصًا ترعينه</button>
-</div></div></section><section class="s" id="custom" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#allergens"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">أضيفي مسبّبًا غير موجود</div></div>
-  <input class="input" value="ياسمين" placeholder="اكتبي أي مادة…">
-  <div class="small">وجدنا مطابقات — اختاري الأقرب:</div>
-  <div class="card list" style="padding:4px 14px">
-    <div class="item"><div><b>ياسمين (نبتة/زهرة)</b><div class="l">Jasminum · لقاح + ملامسة</div></div><span class="badge">نباتات</span></div>
-    <div class="item"><div><b>خلاصة الياسمين في العطور</b><div class="l">Jasmine Absolute · Benzyl Acetate · Linalool</div></div><span class="badge">عطور</span></div>
-    <div class="item"><div><b>شاي الياسمين</b><div class="l">مشروبات</div></div><span class="badge">طعام</span></div></div>
-  <div class="lbl">أو اختاري فئة</div>
-  <div class="chips"><button class="chip xs">نباتات وأزهار</button><button class="chip xs">عطور وروائح</button><button class="chip xs">معادن (نيكل، كوبالت)</button><button class="chip xs">لاتكس</button><button class="chip xs">أدوية</button><button class="chip xs">حيوانات وغبار</button><button class="chip xs">لقاح</button><button class="chip xs">بق الفراش</button><button class="chip xs">منظّفات</button></div>
-  <div class="card small">عند إضافة أي مادة، نربطها تلقائيًا بكل أسمائها العلمية والتجارية ومشتقّاتها حتى نكشفها في أي منتج.</div>
-  <a class="btn" href="#allergens">أضيفي «الياسمين» إلى ملفي</a>
-</div></div></section><section class="s" id="perfume" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">عطر — أو دو بارفان بالورد 50مل</div></div>
-  <div class="ring bad"><big>خطر</big><small>ملامسة</small></div>
-  <div class="card list" style="border-color:var(--red);padding:4px 14px">
-    <div class="item"><div><b style="color:var(--red-ink)">ياسمين</b><div class="l">ظهر باسم: Jasminum Officinale Extract</div></div><span class="chip xs red">ملفك</span></div>
-    <div class="item"><div><b style="color:var(--amber-ink)">لينالول · ليمونين</b><div class="l">مكوّنات عطرية شائعة التحسّس</div></div><span class="chip xs amb">تنبيه</span></div></div>
-  <div class="card small">نصيحة: جرّبي على منطقة صغيرة من الرسغ وانتظري 24 ساعة قبل الاستخدام.</div>
-  <a class="btn" href="#alts">عطور خالية من الياسمين</a>
-  <div class="chips" style="justify-content:center"><span class="chip xs">مكياج</span><span class="chip xs">شامبو</span><span class="chip xs">منظّف</span><span class="chip xs">دواء</span><span class="chip xs">إكسسوار</span></div></div></div></section><section class="s" id="photo" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">تعرّف بالصورة</div></div>
-  <div class="chips"><a class="chip " href="#scan">باركود</a><a class="chip " href="#ocr">قائمة المكوّنات</a><a class="chip " href="#menu">منيو مطعم</a><a class="chip on" href="#photo">تعرّف بالصورة</a></div>
-  <div class="cam" style="background:linear-gradient(160deg,#2B2F48,#4A4E6A)"><div class="frame"></div>
-    <div style="position:absolute;top:52px;left:44px;right:44px;background:rgba(255,255,255,.94);border-radius:10px;padding:8px 10px;font-size:12px;line-height:1.5"><b>تعرّفنا على: عطر Lord George</b><br><span class="small">ثقة 94% · تيستر بدون علبة</span></div>
-    <div style="width:90px;height:90px;color:#fff;opacity:.9"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10h6l2 3v7a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-7z"></path><path d="M10 10V7h4v3M12 4v3M16 6h3"></path></svg></div>
-    <div class="lbl2">شيء بلا ملصق؟ صوّريه وسنتعرّف عليه</div></div>
-  <div class="card" style="border-color:var(--amber);background:var(--amber-soft);font-size:13px;color:var(--ink2)"><b>تنبيه لملفك:</b> هذا العطر يحتوي خلاصة ياسمين حسب قاعدة المنتجات — جرّبيه على الورق لا على الجلد.</div>
-  <div class="small" style="text-align:center">يعمل أيضًا مع: التيسترات في المحلات، باقات الورد، النباتات، الإكسسوارات المعدنية.</div>
-  <a class="btn" href="#perfume">عرض النتيجة</a>
-</div></div></section><section class="s" id="search" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body" style="gap:10px">
-  <div class="hdr"><a class="back" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">بحث وتجارب الناس</div></div>
-  <div class="row input" style="gap:8px;color:var(--ink)"><span style="width:18px;height:18px;color:var(--muted)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg></span>بسكويت تمر بالطحينة<span class="sp"></span><span style="width:18px;height:18px;color:var(--green)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></span></div>
-  <div class="small">اكتبي الاسم أو قوليه بصوتك — بدون تصوير ولا قراءة.</div>
-  <div class="card" style="border-color:var(--red)"><div class="row"><b>بسكويت تمر بالطحينة — 200غ</b><span class="sp"></span><span class="chip xs red">خطر</span></div><div style="font-size:13px;margin-top:4px"><b style="color:var(--red-ink)">سمسم</b> — ظهر باسم: طحينة (Tahini)</div></div>
-  <div class="lbl">تجارب الناس مع هذا المنتج</div>
-  <div class="card list" style="padding:4px 14px">
-    <div class="row" style="font-size:13px;padding:6px 0"><b>14</b>&nbsp;شخصًا سجّلوا تفاعلًا<span class="sp"></span><span class="badge">أكّده فريق حاسّة</span></div>
-    <div class="bar"><i style="width:80%;background:var(--red)"></i></div>
-    <div class="small" style="margin:4px 0 6px">أكثر مسبّب مذكور: سمسم (11) · مكسّرات (3)</div>
-    <div class="item"><div><div style="font-size:13px">«أختي أكلته وطلع فيه طحينة، ما كنا نعرف»</div><div class="l">حساسية سمسم · طفح وتورّم · قبل شهر</div></div></div>
-    <div class="item"><div><div style="font-size:13px">«حكّة بالحلق بعد قطعتين»</div><div class="l">حساسية مكسّرات · قبل أسبوع</div></div></div></div>
-  <div class="row"><a class="btn ghost sm" href="#report">+ سجّلي تجربتك</a><a class="btn sm" href="#alts">بدائل آمنة</a></div>
-</div></div></section><section class="s" id="report" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">سجّلي تجربتك مع منتج</div></div>
-  <div class="small">تجربتك تحمي غيرك — تُراجع قبل النشر.</div>
-  <div class="lbl">المنتج</div><input class="input" value="شامبو مقوٍّ بجذور الزنجبيل — 250مل">
-  <div class="lbl">ماذا حدث؟</div><div class="chips"><button class="chip on">حكّة</button><button class="chip on">احمرار</button><button class="chip ">تورّم</button><button class="chip ">ضيق تنفّس</button><button class="chip ">أخرى</button></div>
-  <div class="lbl">المسبّب الذي تشكّين فيه</div>
-  <div class="chips"><button class="chip ">قمح/غلوتين</button><button class="chip on">عطر</button><button class="chip ">لا أعرف</button></div>
-  <button class="card small" style="border-style:dashed;text-align:right;display:flex;gap:8px;align-items:center"><span style="width:18px;height:18px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></span>صوّري قائمة المكوّنات (اختياري) — تساعد الفريق يتحقّق أسرع</button>
-  <div class="card small" style="background:var(--green-soft);border:0;color:var(--green-ink)">خصوصيتك: تُنشر التجربة بدون اسمك، فقط نوع الحساسية والعرض.</div>
-  <div class="sp"></div>
-  <a class="btn" href="#reportStatus">أرسلي للمراجعة</a>
-</div></div></section><section class="s" id="reportStatus" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">حالة بلاغاتي</div><span class="chip xs">3 بلاغات</span></div>
-  <div class="card list" style="padding:4px 14px">
-    <div class="item"><div><b>شامبو مقوٍّ بجذور الزنجبيل</b><div class="l">أُرسل اليوم · يحتوي عطرًا حسب الملصق المرفق</div></div><span class="chip xs amb">قيد المراجعة</span></div>
-    <div class="item"><div><b>بسكويت تمر بالطحينة</b><div class="l">تم التحقق: سمسم مذكور في المكوّنات</div></div><span class="chip xs grn">نُشر ✓</span></div>
-    <div class="item"><div><b>كريم ليلي — ماركة X</b><div class="l">المكوّن غير مذكور بالملصق — أُضيف كـ«تجارب مستخدمين» فقط</div></div><span class="chip xs">نُشر بتحفّظ</span></div></div>
-  <div class="lbl">مراحل المراجعة</div>
-  <div class="card" style="display:flex;flex-direction:column;gap:8px">
-    <div class="stepn"><i class="g">1</i><span>الذكاء الاصطناعي يقرأ الملصق المرفق ويطابق البلاغ.</span></div>
-    <div class="stepn"><i class="g">2</i><span>فريق حاسّة يتحقق (مختص تغذية/صيدلي).</span></div>
-    <div class="stepn"><i class="g">3</i><span>يُنشر مع مستوى الثقة: «مؤكّد من الملصق» أو «تجارب مستخدمين».</span></div></div>
-  <div class="card small"><b>للشركات:</b> المصنّع يضيف منتجاته بنفسه ويحصل على شارة «مُدرج من الشركة».</div>
-</div></div></section><section class="s" id="settings" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body">
-  <div class="hdr"><a class="back" href="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a><div class="h2">الإعدادات</div></div>
-  <div class="card list" style="padding:4px 14px">
-    <div class="setrow"><span>الوضع</span><div class="chips"><a class="chip xs " href="#place_kid">طفل</a><a class="chip xs on" href="#allergens">عادي</a><a class="chip xs " href="#place_elder">كبار السن</a></div></div>
-    <div class="setrow"><span>قراءة النتيجة بصوت عالٍ</span><button class="toggle off"></button></div>
-    <div class="setrow"><span>تنبيه ولي الأمر عند الخطر</span><button class="toggle off"></button></div>
-    <div class="setrow"><span>تنبيهات اللقاح والغبار</span><button class="toggle"></button></div>
-    <div class="setrow"><span>اللغة</span><span class="small">العربية · English</span></div></div>
-  <div class="lbl">الملف</div>
-  <div class="card list" style="padding:4px 14px">
-    <a class="setrow" href="#allergens"><span>مسبّبات الحساسية</span><span class="small">4 مواد ›</span></a>
-    <a class="setrow" href="#medcard"><span>البطاقة الطبية</span><span class="small">›</span></a>
-    <a class="setrow" href="#caregiver"><span>العائلة ومن أرعاهم</span><span class="small">2 ›</span></a></div>
-  <div class="small" style="text-align:center;margin-top:8px">حاسّة · الإصدار التجريبي 0.3</div>
-</div></div></section><section class="s" id="map" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body"><div class="row"><div class="h2">كل الشاشات</div><span class="sp"></span><a class="small" href="#home">إغلاق</a></div><div class="maplist"><div class="grp">البداية</div><a href="#welcome">1. الترحيب</a><a href="#mode">1ب. اختيار الوضع</a><a href="#allergens">2. اختيار المسبّبات</a><a href="#severity">3. درجة الخطورة</a><div class="grp">الرئيسية والمسح</div><a href="#home">4. الرئيسية</a><a href="#place">4ب. اختيار المكان</a><a href="#product">4ج. المنتج حسب المكان</a><a href="#input">4د. طريقة الإدخال</a><a href="#scan">5. مسح الباركود</a><a href="#ocr">6. تصوير المكوّنات</a><div class="grp">النتيجة</div><a href="#rSafe">7. آمن</a><a href="#rWarn">8. تنبيه</a><a href="#rDanger">9. خطر</a><a href="#drug">9ب. دواء (صيدلية)</a><div class="grp">البدائل والمساعد</div><a href="#alts">10. البدائل</a><a href="#assistant">11. المساعد الذكي</a><a href="#log">12. الاكتشاف</a><div class="grp">الطوارئ</div><a href="#sos">13. فرز الأعراض</a><a href="#sosSteps">14. خطوات الطوارئ</a><a href="#medcard">15. البطاقة الطبية</a><div class="grp">المطاعم</div><a href="#menu">16. مسح المنيو</a><a href="#dish">17. تأكيد الطبق</a><a href="#waiter">18. بطاقة النادل</a><div class="grp">لكل الأعمار</div><a href="#elder">19. وضع كبار السن</a><a href="#place_elder">19ب. المكان — كبار السن</a><a href="#input_elder">19ج. الإدخال — كبار السن</a><a href="#kid">20. وضع الأطفال</a><a href="#place_kid">20ب. المكان — طفل</a><a href="#product_kid">20ج. المنتج — طفل</a><a href="#input_kid">20د. الإدخال — طفل</a><a href="#caregiver">21. لوحة مقدّم الرعاية</a><div class="grp">أي مسبّب، أي منتج</div><a href="#custom">22. مسبّب مخصّص</a><a href="#perfume">23. فحص عطر</a><a href="#photo">24. تعرّف بالصورة</a><div class="grp">تجارب الناس</div><a href="#search">25. بحث + تجارب الناس</a><a href="#report">26. تسجيل تجربة</a><a href="#reportStatus">27. قيد المراجعة</a><div class="grp">الإعدادات</div><a href="#settings">28. الإعدادات</a></div></div></div></section><section class="s" id="welcome" data-mode="normal"><div class="status"><span>9:41</span><span>●●● ◔</span></div><div class="view"><div class="body" style="background:linear-gradient(160deg,#3A79C5,#5A93D9 70%,#F4B6B6 170%);color:#fff;justify-content:center;text-align:center;gap:16px;flex:1">
-  <div class="logo"><svg width="96" height="96" viewBox="0 0 200 200" fill="none"><path d="M150 60 A62 62 0 1 0 150 140" stroke="#fff" stroke-width="12" stroke-linecap="round"></path><path d="M132 78 A36 36 0 1 0 132 122" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-opacity=".55"></path><circle cx="100" cy="100" r="11" fill="#6FE3CF"></circle><circle cx="150" cy="60" r="7" fill="#fff"></circle></svg><div class="wordmark">حاسّة</div></div>
-  <div class="sub" style="color:rgba(255,255,255,.75);max-width:260px;margin:0 auto">تعرف مكوّنات كل شيء قبلك — ما تأكله، وما تلمسه، وما تستنشقه.</div>
-  <div style="height:16px"></div>
-  <a class="btn" style="background:#fff;color:var(--p)" href="#mode">أنشئ ملف الحساسية</a>
-  <a class="btn ghost" style="border-color:rgba(255,255,255,.6);color:#fff" href="#home">لديّ حساب — دخول</a>
-</div></div></section><a class="mapbtn" href="#map" aria-label="خريطة الشاشات"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></a></div></div>
-</div></body></html>
+Option B
+Data mart
+
+Option C
+Data lakehouse
+
+Selected
+Option D
+Virtual warehouse
+
+Question 5
+Question 5
+0.75
+ Points
+Question 5
+A research center wants to store raw images, text files, sensor data, and database records in one place. Researchers may use them later for different analyses. What is most suitable?
+
+Option A
+OLTP database
+
+Option B
+Star schema
+
+Option C
+Data lake
+
+Selected
+Option D
+Data mart
+
+Question 6
+Question 6
+0.75
+ Points
+Question 6
+A cube contains Time, Vehicle Type, and Region. An analyst wants to view only Q1, while keeping all vehicle types and regions. Which OLAP operation should she use?
+
+Option A
+Drill-down
+
+Option B
+Dice
+
+Option C
+Roll-up
+
+Option D
+Slice
+
+Selected
+Question 7
+Question 7
+0.75
+ Points
+Question 7
+A delivery company combines data from several systems. One system stores a date as 23/09/2026, while another stores it as 2026-09-23. The company changes them to one format before storing them in the warehouse. Which data warehouse characteristic does this support?
+
+Option A
+Time-variant
+
+Option B
+Nonvolatile
+
+Option C
+Subject-oriented
+
+Option D
+Integrated
